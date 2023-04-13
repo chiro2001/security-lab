@@ -10,6 +10,7 @@ kernel_modules:
 
 clean:
 	make -C /lib/modules/$(KVERS)/build M=$(CURDIR) clean
+	rm -rf CacheTime ExceptionHandling MeltdownExperiment MeltdownExperimentAsm MeltdownExperimentNext UsertoKernel FlushReload
 
 CacheTime:
 	gcc -march=native CacheTime.c -o CacheTime
@@ -55,7 +56,13 @@ MeltdownExperimentNext: replace3
 
 MeltdownExperimentAsm: replace4
 	gcc -march=native MeltdownExperimentAsm2.c -o MeltdownExperimentAsm
-	./MeltdownExperimentAsm
+	# ./MeltdownExperimentAsm
+
+MeltdownAttack:
+	gcc -march=native MeltdownAttack.c -o MeltdownAttack
+	./MeltdownAttack
 
 remove:
 	sudo rmmod MeltdownKernel
+
+.PHONY: CacheTime FlushReload UsertoKernel ExceptionHandling MeltdownExperiment MeltdownExperimentNext MeltdownExperimentAsm MeltdownAttack

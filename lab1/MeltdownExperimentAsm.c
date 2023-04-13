@@ -55,7 +55,7 @@ void meltdown_asm(unsigned long kernel_data_addr) {
 
   // Give eax register something to do
   asm volatile(
-      ".rept 1200;"
+      ".rept 400;"
       "add $0x141, %%eax;"
       ".endr;"
 
