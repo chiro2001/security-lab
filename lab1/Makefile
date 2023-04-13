@@ -1,6 +1,7 @@
 KVERS = $(shell uname -r)
 
-CFLAGS := -g -march=native
+MY_CFLAGS += -march=native
+# MY_CFLAGS += -g
 
 # Kernel modules
 obj-m += MeltdownKernel.o
@@ -15,11 +16,11 @@ clean:
 	rm -rf CacheTime ExceptionHandling MeltdownExperiment MeltdownExperimentAsm MeltdownExperimentNext UsertoKernel FlushReload
 
 CacheTime:
-	gcc $(CFLAGS) CacheTime.c -o CacheTime
+	gcc $(MY_CFLAGS) CacheTime.c -o CacheTime
 	./CacheTime
 
 FlushReload:
-	gcc $(CFLAGS) FlushReload.c -o FlushReload
+	gcc $(MY_CFLAGS) FlushReload.c -o FlushReload
 	./FlushReload
 
 run: build
@@ -40,28 +41,34 @@ replace3:
 replace4:
 	sed 's/0xfb61b000/0x$(shell sudo dmesg | grep 'secret data address' | sed 's/:/ /g' | awk '{print $$NF}')/' MeltdownExperimentAsm.c > MeltdownExperimentAsm2.c
 
+replace5:
+	sed 's/0xfb61b000/0x$(shell sudo dmesg | grep 'secret data address' | sed 's/:/ /g' | awk '{print $$NF}')/' MeltdownAttack.c > MeltdownAttack2.c
+
 UsertoKernel: replace
-	gcc $(CFLAGS) UsertoKernel2.c -o UsertoKernel
+	gcc $(MY_CFLAGS) UsertoKernel2.c -o UsertoKernel
 	./UsertoKernel
 
 ExceptionHandling:
-	gcc $(CFLAGS) ExceptionHandling.c -o ExceptionHandling
+	gcc $(MY_CFLAGS) ExceptionHandling.c -o ExceptionHandling
 	./ExceptionHandling
 
 MeltdownExperiment: replace2
-	gcc $(CFLAGS) MeltdownExperiment2.c -o MeltdownExperiment
+	gcc $(MY_CFLAGS) MeltdownExperiment2.c -o MeltdownExperiment
 	./MeltdownExperiment
 
 MeltdownExperimentNext: replace3
-	gcc $(CFLAGS) MeltdownExperimentNext2.c -o MeltdownExperimentNext
+	gcc $(MY_CFLAGS) MeltdownExperimentNext2.c -o MeltdownExperimentNext
 	./MeltdownExperimentNext
 
 MeltdownExperimentAsm: replace4
-	gcc $(CFLAGS) MeltdownExperimentAsm2.c -o MeltdownExperimentAsm
+	gcc $(MY_CFLAGS) MeltdownExperimentAsm2.c -o MeltdownExperimentAsm
 	./MeltdownExperimentAsm
 
-MeltdownAttack:
-	gcc $(CFLAGS) MeltdownAttack.c -o MeltdownAttack
+MeltdownAttack: replace5
+	gcc $(MY_CFLAGS) MeltdownAttack2.c -o MeltdownAttack
+	# ./MeltdownAttack
+
+attack: MeltdownAttack
 	./MeltdownAttack
 
 remove:

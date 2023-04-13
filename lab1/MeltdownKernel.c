@@ -18,7 +18,7 @@ static int test_proc_open(struct inode *inode, struct file *file) {
   return single_open(file, NULL, PDE(inode)->data);
 #else
 //   return single_open(file, NULL, PDE_DATA(inode));
-  return single_open(file, NULL, pde_data(inode));
+  return single_open(file, NULL, PDE_DATA(inode));
 #endif
 }
 
@@ -45,7 +45,7 @@ static __init int test_proc_init(void) {
   // create data entry in /proc
   secret_entry =
       proc_create_data("secret_data", 0444, NULL,
-                       (const struct proc_ops *)&test_proc_fops, NULL);
+                       &test_proc_fops, NULL);
   if (secret_entry) return 0;
 
   return -ENOMEM;
