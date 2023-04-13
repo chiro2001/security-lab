@@ -1,5 +1,7 @@
 KVERS = $(shell uname -r)
 
+CFLAGS := -g -march=native
+
 # Kernel modules
 obj-m += MeltdownKernel.o
 
@@ -13,11 +15,11 @@ clean:
 	rm -rf CacheTime ExceptionHandling MeltdownExperiment MeltdownExperimentAsm MeltdownExperimentNext UsertoKernel FlushReload
 
 CacheTime:
-	gcc -march=native CacheTime.c -o CacheTime
+	gcc $(CFLAGS) CacheTime.c -o CacheTime
 	./CacheTime
 
 FlushReload:
-	gcc -march=native FlushReload.c -o FlushReload
+	gcc $(CFLAGS) FlushReload.c -o FlushReload
 	./FlushReload
 
 run: build
@@ -39,27 +41,27 @@ replace4:
 	sed 's/0xfb61b000/0x$(shell sudo dmesg | grep 'secret data address' | sed 's/:/ /g' | awk '{print $$NF}')/' MeltdownExperimentAsm.c > MeltdownExperimentAsm2.c
 
 UsertoKernel: replace
-	gcc -march=native UsertoKernel2.c -o UsertoKernel
+	gcc $(CFLAGS) UsertoKernel2.c -o UsertoKernel
 	./UsertoKernel
 
 ExceptionHandling:
-	gcc -march=native ExceptionHandling.c -o ExceptionHandling
+	gcc $(CFLAGS) ExceptionHandling.c -o ExceptionHandling
 	./ExceptionHandling
 
 MeltdownExperiment: replace2
-	gcc -march=native MeltdownExperiment2.c -o MeltdownExperiment
+	gcc $(CFLAGS) MeltdownExperiment2.c -o MeltdownExperiment
 	./MeltdownExperiment
 
 MeltdownExperimentNext: replace3
-	gcc -march=native MeltdownExperimentNext2.c -o MeltdownExperimentNext
+	gcc $(CFLAGS) MeltdownExperimentNext2.c -o MeltdownExperimentNext
 	./MeltdownExperimentNext
 
 MeltdownExperimentAsm: replace4
-	gcc -march=native MeltdownExperimentAsm2.c -o MeltdownExperimentAsm
-	# ./MeltdownExperimentAsm
+	gcc $(CFLAGS) MeltdownExperimentAsm2.c -o MeltdownExperimentAsm
+	./MeltdownExperimentAsm
 
 MeltdownAttack:
-	gcc -march=native MeltdownAttack.c -o MeltdownAttack
+	gcc $(CFLAGS) MeltdownAttack.c -o MeltdownAttack
 	./MeltdownAttack
 
 remove:
