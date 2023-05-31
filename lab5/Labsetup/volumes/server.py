@@ -9,8 +9,8 @@ HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n
 <!DOCTYPE html><html><body><h1>This is Bank32.com!</h1></body></html>
 """
 
-SERVER_CERT = './server-certs/mycert.crt'
-SERVER_PRIVATE = './server-certs/mycert.key'
+SERVER_CERT = './server-certs/server.crt'
+SERVER_PRIVATE = './server-certs/server.key'
 
 
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)  # For Ubuntu 20.04 VM
@@ -18,7 +18,7 @@ context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)  # For Ubuntu 20.04 VM
 context.load_cert_chain(SERVER_CERT, SERVER_PRIVATE)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-sock.bind(('0.0.0.0', 4433))
+sock.bind(('10.9.0.43', 443))
 sock.listen(5)
 
 while True:

@@ -33,7 +33,18 @@ print("=== Server hostname: {}".format(ssock.server_hostname))
 print("=== Server certificate:")
 pprint.pprint(ssock.getpeercert())
 pprint.pprint(context.get_ca_certs())
-input("After TLS handshake. Press any key to continue ...")
+print("After TLS handshake. Press any key to continue ...")
+
+# Send HTTP Request to Server
+request = b"GET / HTTP/1.0\r\nHost: " + hostname.encode('utf-8') + b"\r\n\r\n"
+ssock.sendall(request)
+# Read HTTP Response from Server
+response = ssock.recv(2048)
+while response:
+    pprint.pprint(response.split(b"\r\n"))
+    response = ssock.recv(2048)
+
+
 
 # Close the TLS Connection
 ssock.shutdown(socket.SHUT_RDWR)
